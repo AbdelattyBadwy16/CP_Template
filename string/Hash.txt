@@ -1,0 +1,50 @@
+struct DHash {
+    vector<int>pw, pref, inv;
+    vector<int>pw2, pref2, inv2;
+    int base;
+    int base2;
+    DHash(vector<int>& s) {
+        base = 31;
+        base2 = 37;
+        int n = s.size();
+        pw = vector<int>(n), inv = vector<int>(n), pref = vector<int>(n);
+        pw2 = vector<int>(n), inv2 = vector<int>(n), pref2 = vector<int>(n);
+        pw[0] = 1, inv[0] = 1;
+        pw2[0] = 1, inv2[0] = 1;
+        for (int i = 1; i < n; i++) {
+            pw[i] = mul(base, pw[i - 1]);
+            pw2[i] = mul(base2, pw2[i - 1]);
+            inv[i] = fp(pw[i], mod - 2);
+            inv2[i] = fp(pw2[i], mod - 2);
+        }
+        int hash_value = 0;
+        int hash_value2 = 0;
+        for (int i = 0; i < n; i++) {
+            hash_value = add(hash_value, mul(s[i], pw[i]));
+            hash_value2 = add(hash_value2, mul(s[i], pw2[i]));
+            pref[i] = hash_value;
+            pref2[i] = hash_value2;
+        }
+    }
+    inline int add(int a, int b) {
+        return (0LL + a + b + mod) % mod;
+    }
+    inline int mul(int a, int b) {
+        return (1LL * a * b) % mod;
+    }
+    int fp(int b, int p) {
+        int res = 1;
+        while (p) {
+            if (p & 1)
+                res = mul(res, b);
+            b = mul(b, b);
+            p >>= 1;
+        }
+        return res;
+    }
+    pair<int, int> get_Hash(int L, int R) {
+        if (L == 0)
+            return { pref[R],pref2[R] };
+        return { mul(add(pref[R], -pref[L - 1]), inv[L]),mul(add(pref2[R], -pref2[L - 1]), inv2[L]) };
+    }
+};

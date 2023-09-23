@@ -1,0 +1,13 @@
+int fp(int b, int p)
+{
+   int res = 1;
+   while (p)
+   {
+      if (p & 1)
+         res = mul(res, b);
+      b = mul(b, b);
+      p >>= 1;
+   }
+   return res;
+}
+ 

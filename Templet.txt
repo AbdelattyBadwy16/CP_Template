@@ -1,0 +1,50 @@
+#define sumOf(a) (ll)((-1 + sqrt(8 * a + 1)) / 2)
+
+constexpr ll OO = 0x3f3f3f3f3f3f3f3f;
+
+constexpr int mod = 1000000000 + 7, N = 1e6 + 5;
+
+int dx[8] = {1, 0, -1, 0, -1, 1, -1, 1};
+int dy[8] = {0, 1, 0, -1, -1, 1, 1, -1};
+
+ 
+inline int add(int a, int b)
+{
+   return (0LL + a + b + mod) % mod;
+}
+
+
+inline int mul(int a, int b)
+{
+   return (1LL * a * b) % mod;
+}
+
+
+ll GCD(ll a, ll b)
+{
+   if (b == 0)
+      return a;
+   return GCD(b, a % b);
+}
+ 
+
+
+ll LCM(ll a, ll b)
+{
+   return (a / GCD(a, b)) * b;
+}
+
+
+int fp(int b, int p)
+{
+   int res = 1;
+   while (p)
+   {
+      if (p & 1)
+         res = mul(res, b);
+      b = mul(b, b);
+      p >>= 1;
+   }
+   return res;
+}
+ 

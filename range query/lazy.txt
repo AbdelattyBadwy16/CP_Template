@@ -1,0 +1,69 @@
+struct SegTree
+{
+    vector<ll>tree , lazy;
+    int n;
+    ll compine (ll l,ll r)
+    {
+        return min(l,r);
+    }
+    void build(int oldn,ll *arr)
+    {
+        if(__builtin_popcount(oldn)!=1)
+        {
+            n=1<<(__lg(oldn)+1);
+        }else n=oldn;
+
+        tree.resize(n<<1,0);
+        lazy.resize(n<<1,0);
+        for(int i=oldn ; i<n ; i++)
+            tree[i+n]=INT_MAX;
+
+        for(int i=0 ; i<oldn ; i++)
+        {
+            tree[i+n]=arr[i];
+        }
+        for(int i=n-1 ;i>=1 ; i--)
+        {
+            tree[i]=compine(tree[i<<1],tree[i<<1|1]);
+        }
+
+    }
+
+    void prop(int k,int sl,int sr)
+    {
+        if(lazy[k]!=0)
+        {
+            tree[k]+=(ll)(lazy[k] * (ll)(sr - sl + 1));
+            //cout<<tree[k]<<endl;
+            if(sl!=sr)
+                lazy[k<<1]+=lazy[k],lazy[k<<1|1]+=lazy[k];
+        }
+        lazy[k]=0;
+    }
+
+    ll query(int ql,int qr,int k,int sl,int sr)
+    {
+       // prop(k,sl,sr);
+        //cout<<ql<<" "<<qr<<" "<<sl<<" "<<sr<<" "<<tree[k]<<endl;
+        if(ql<=sl && qr>=sr)return tree[k];
+        if(ql>sr || sl>qr)return 0;
+        int mid=(sr+sl)>>1;
+        return compine(query(ql,qr,k<<1,sl,mid),query(ql,qr,k<<1|1,mid+1,sr) ) ;
+    }
+
+    void update(int ql,int qr,ll v,int k,int sl ,int sr)
+    {
+        //prop(k,sl,sr);
+        if(ql<=sl && qr>=sr){
+              tree[k]=v;
+          //  prop(k,sl,sr);
+            return;
+        }
+        if(ql>sr || sl>qr)return ;
+        int mid=(sl+sr)>>1;
+        update(ql,qr,v,k<<1,sl,mid);
+        update(ql,qr,v,k<<1|1,mid+1,sr);
+        tree[k]=compine(tree[k<<1],tree[k<<1|1]);
+    }
+
+};

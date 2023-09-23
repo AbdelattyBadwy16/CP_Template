@@ -1,0 +1,54 @@
+class trie
+{
+    struct Node
+    {
+        map<int,Node*>child;
+        bool isWord;
+        int cnt;
+ 
+        Node()
+        {
+            isWord=0;
+            cnt=0;
+        }
+    };
+ 
+    Node* root;
+ 
+public:
+    trie()
+    {
+        root=new Node;
+    }
+ 
+    void insert(string s)
+    {
+        Node* temp=root;
+        for(auto c : s)
+        {
+            //cout<<temp->child.count(c)<<" "<<c<<endl;
+            if(temp->child.count(c)==0)
+            {
+                temp->child[c]=new Node;
+            }
+            temp=temp->child[c];
+            temp->cnt++;
+        }
+        temp->isWord=1;
+ 
+    }
+ 
+    bool isPre(string s)
+    {
+        Node* temp=root;
+        for(auto c : s)
+        {
+           // cout<<temp->child.count(c)<<" "<<temp->child[c]->cnt<<" "<<c<<endl;
+            if(temp->child.count(c)==0 || temp->child[c]->cnt<2)
+                return 0;
+                temp=temp->child[c];
+        }
+         return temp->cnt>1;
+    }
+ 
+};

@@ -1,0 +1,62 @@
+struct SegTree
+{
+     vector<Node>tree;
+     int n;
+     Node compine (Node left,Node right)
+     {
+         Node ret;
+         ret.maxPref=max(left.maxPref,left.sum+right.maxPref);
+         ret.maxSuffx=max(right.maxSuffx,right.sum+left.maxSuffx);
+         ret.ans=max({left.ans,right.ans,left.maxSuffx+right.maxPref});
+         ret.sum=left.sum+right.sum;
+         return ret;
+     }
+     void build(int oldn,ll *arr)
+     {
+         if(__builtin_popcount(oldn)!=1)
+         {
+             n=1<<(__lg(oldn)+1);
+         }else n=oldn;
+
+         tree.resize(n<<1);
+         for(int i=oldn ; i<n ; i++)
+             tree[i+n]=Node(0);
+         for(int i=0 ; i<oldn ; i++)
+         {
+               tree[i+n]=Node(arr[i]);
+         }
+         for(int i=n-1 ;i>=1 ; i--)
+         {
+               tree[i]=compine(tree[i<<1],tree[i<<1|1]);
+         }
+
+     }
+
+     Node query(int ql,int qr,int k,int sl ,int sr)
+     {
+         if(ql<=sl && sr<=qr)
+             return tree[k];
+         if(ql>sr || sl>qr)
+             return Node(0);
+
+         int mid=(sl+sr)>>1;
+         return compine(query(ql,qr,k<<1,sl,mid) , query(ql,qr,k<<1|1,mid+1,sr));
+     }
+
+    void update(int ql,int qr,ll v,int k,int sl ,int sr)
+    {
+        if(ql<=sl && sr<=qr)
+        {
+            tree[k]=Node(v);
+            return;
+        }
+        if(ql>sr || sl>qr)
+            return ;
+
+        int mid=(sl+sr)>>1;
+        update(ql,qr,v,k<<1,sl,mid);
+        update(ql,qr,v,k<<1|1,mid+1,sr);
+        tree[k]=compine(tree[k<<1],tree[k<<1|1]);
+    }
+
+};

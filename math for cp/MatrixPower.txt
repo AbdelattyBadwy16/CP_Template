@@ -1,0 +1,78 @@
+#include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+#define ll long long
+#define endl '\n'
+using namespace std;
+using namespace __gnu_pbds;
+const int MOD = 1e9+7;
+typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> pbds;
+
+vector<vector<ll>> mulMats(vector<vector<ll>>&a , vector<vector<ll>>&b)
+{
+    int rows = a.size();
+    int cols =b[0].size();
+    vector<vector<ll>> res(rows,vector<ll>(cols));
+    for(int i=0 ; i<rows ; i++)
+    {
+        for(int j=0 ; j<cols ; j++)
+        {
+            for(int k=0 ; k<b.size() ; k++)
+            {
+                res[i][j] = (res[i][j] + (a[i][k] * b[k][j])%MOD)%MOD;
+            }
+        }
+    }
+    return res;
+}
+vector<vector<ll>> IDN;
+vector<vector<ll>>fp(vector<vector<ll>> &b, ll p)
+{
+    if(p==0)
+        return IDN;
+    vector<vector<ll>> u =fp(b,p/2);
+    u = mulMats(u,u);
+    if(p&1) u = mulMats(u,b);
+    return u;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+#ifndef ONLINE_JUDGE
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+#endif
+    IDN = {{1,0,0,0,0,0},
+           {0,1,0,0,0,0},
+           {0,0,1,0,0,0},
+           {0,0,0,1,0,0},
+           {0,0,0,0,1,0},
+           {0,0,0,0,0,1}};
+    ll n; cin>>n;
+    if(n==0)
+    {
+        cout<<1<<endl;
+        return 0;
+    }
+    vector<vector<ll>> trans = {{1,1,1,1,1,1},
+                                {1,0,0,0,0,0},
+                                {0,1,0,0,0,0},
+                                {0,0,1,0,0,0},
+                                {0,0,0,1,0,0},
+                                {0,0,0,0,1,0}};
+    vector<vector<ll>> init = {
+            {1},
+            {0},
+            {0},
+            {0},
+            {0},
+            {0}
+    };
+    vector<vector<ll>> ans =fp(trans,n);
+    ans = mulMats(ans,init);
+    cout<<ans[0][0]<<endl;
+    return 0;
+}

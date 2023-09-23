@@ -1,0 +1,14 @@
+vector<int> KMP(string s)
+{
+    vector<int> v(s.size(),0);
+    for (int i = 1, k = 0; i < s.size(); i++)
+    {
+        while (k > 0 && s[i] != s[k])
+            k = v[k - 1];
+        if (s[i] == s[k])
+            v[i] = ++k;
+        else
+            v[i] = k;
+    }
+    return v;
+}

@@ -1,0 +1,15 @@
+
+vector<bool>isprime(n+1,ture);
+
+int sieve(int n)
+{
+   isprime[0]=isprime[1]=0;
+   for(int i=2 ; i*i<=n ; i++)
+   {
+       if(isprime[i])
+       {
+           for(int j=i*2 ; j<=n ; j+=i)
+                isprime[j]=0;
+       }
+   }
+}

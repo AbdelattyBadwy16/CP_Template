@@ -1,0 +1,15 @@
+// ax+by=gcd(a,b)
+ll extended_euclid(ll a, ll b, ll &x, ll &y)
+{
+    if (b == 0)
+    {
+        x = 1;
+        y = 0;
+        return a;
+    }
+    // swap b, a and swap their x , y
+    ll g = extended_euclid(b, a % b, y, x);
+    // now our x = prev y
+    y -= (a / b) * x;
+    return g;
+}
